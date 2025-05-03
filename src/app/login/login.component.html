@@ -1,0 +1,47 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title style="text-align: center;">
+        <span class="material-icons">login</span>  <!-- Ícone de login -->
+        <h3>Entrar</h3>  <!-- Título do Formulário -->
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="Login()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>E-mail</mat-label>
+          <input matInput formControlName="email" placeholder="Digite seu e-mail" />
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+            O e-mail é obrigatório
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+            Informe um e-mail válido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input matInput formControlName="password" type="password" placeholder="Digite sua senha" />
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            A senha é obrigatória
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+            A senha deve ter no mínimo 6 caracteres
+          </mat-error>
+        </mat-form-field>
+
+        <div class="error-message" *ngIf="error">{{ error }}</div>
+
+        <div class="login-actions">
+          <button mat-raised-button color="primary" [disabled]="loading" type="submit">
+            {{ loading ? 'Carregando...' : 'Entrar' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-footer>
+      <a routerLink="/forgot-password">Esqueceu a senha?</a> | 
+      <a routerLink="/signup">Criar conta</a>
+    </mat-card-footer>
+  </mat-card>
+</div>

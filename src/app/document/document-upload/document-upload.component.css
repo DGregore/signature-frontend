@@ -1,0 +1,26 @@
+.upload-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .upload-card {
+    width: 100%;
+    max-width: 500px;
+    margin: 16px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  .upload-actions {
+    margin-top: 20px;
+  }
+  

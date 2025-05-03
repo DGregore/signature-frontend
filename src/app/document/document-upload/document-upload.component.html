@@ -1,0 +1,15 @@
+<div class="upload-container">
+  <mat-card class="upload-card">
+    <mat-card-header>
+      <mat-card-title>Upload de Documento</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="uploadForm" (ngSubmit)="onUpload()">
+        <mat-form-field appearance="fill">
+          <mat-label>Nome do Documento</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Descrição</mat-label>
+          <input matInput formControlName="description" />

@@ -1,0 +1,29 @@
+<div class="dashboard-container">
+    <div class="summary-cards">
+      <mat-card class="summary-card">
+        <mat-card-header>
+          <mat-card-title>Documentos Pendentes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <h2>{{ documentsPending }}</h2>
+          <p>Documentos aguardando assinatura.</p>
+        </mat-card-content>
+      </mat-card>
+  
+      <mat-card class="summary-card">
+        <mat-card-header>
+          <mat-card-title>Documentos Assinados</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <h2>{{ documentsSigned }}</h2>
+          <p>Documentos assinados e concluídos.</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  
+    <div class="action-links">
+      <a routerLink="/upload-document" mat-raised-button color="primary">Upload de Documentos</a>
+      <a routerLink="/document-list" mat-raised-button color="accent">Meus Documentos</a>
+    </div>
+  </div>
+  

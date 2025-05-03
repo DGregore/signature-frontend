@@ -1,0 +1,32 @@
+<div class="document-list-container">
+    <mat-card class="document-list-card">
+      <mat-card-header>
+        <mat-card-title>Meus Documentos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-table [dataSource]="documents">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+            <mat-cell *matCellDef="let document">{{ document.name }}</mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let document">{{ document.status }}</mat-cell>
+          </ng-container>
+  
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
+            <mat-cell *matCellDef="let document">
+              <button mat-button>Visualizar</button>
+              <button mat-button>Assinar</button>
+            </mat-cell>
+          </ng-container>
+  
+          <mat-header-row *matHeaderRowDef="['name', 'status', 'actions']"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: ['name', 'status', 'actions'];"></mat-row>
+        </mat-table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  

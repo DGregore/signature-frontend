@@ -1,0 +1,28 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .summary-cards {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .summary-card {
+    width: 200px;
+    margin: 10px;
+  }
+  
+  h2 {
+    color: #ff4081;
+    font-size: 36px;
+  }
+  
+  .action-links a {
+    margin: 10px;
+  }
+  
