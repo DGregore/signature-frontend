@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Often needed for Angular Material
 
 // Import the interceptor
-import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 
 // Import other components used in declarations if necessary (example)
 // import { DashboardComponent } from './dashboard/dashboard.component';
