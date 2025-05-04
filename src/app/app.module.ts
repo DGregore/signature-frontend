@@ -1,73 +1,63 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';  // Para ngModel e ReactiveForms
-import { RouterModule } from '@angular/router';  // Para o roteamento
-import { MatCardModule } from '@angular/material/card';  // Para mat-card e seus componentes
-import { MatFormFieldModule } from '@angular/material/form-field';  // Para mat-form-field e mat-label
-import { MatInputModule } from '@angular/material/input';  // Para matInput
-import { MatButtonModule } from '@angular/material/button';  // Para mat-raised-button
-import { appRoutes } from './app.routes';  // Arquivo de rotas
-import { AppComponent } from './app.component';  // Componente raiz
-import { LoginComponent } from './login/login.component';  // Componente de login
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { appRoutes } from './app.routes';
+import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; // Import HTTP_INTERCEPTORS
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Often needed for Angular Material
 
+// Import the interceptor
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+
+// Import other components used in declarations if necessary (example)
+// import { DashboardComponent } from './dashboard/dashboard.component';
+// import { ... } from '...';
 
 @NgModule({
-    imports: [
+  declarations: [
+    // AppComponent, // AppComponent is often standalone or part of another module now
+    // LoginComponent, // Declare components here if not standalone
+    // Add other components like DashboardComponent, etc.
+  ],
+  imports: [
     BrowserModule,
+    BrowserAnimationsModule, // Add BrowserAnimationsModule
     HttpClientModule,
-    FormsModule,  // Adicionando FormsModule para ngModel
-    ReactiveFormsModule,  // Para usar FormGroup e validações reativas
-    RouterModule.forRoot(appRoutes),  // Configurando as rotas
-    MatCardModule,  // Importando MatCardModule
-    MatFormFieldModule,  // Importando MatFormFieldModule
-    MatInputModule,  // Importando MatInputModule
-    MatButtonModule,  // Importando MatButtonModule
-    CommonModule, 
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(appRoutes),
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    CommonModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
-     
-     ],
-    //bootstrap: [AppComponent]  // Colocando o AppComponent no bootstrap
+    // Import standalone components or modules containing them if needed
+    AppComponent, // Import standalone AppComponent if it is
+    LoginComponent // Import standalone LoginComponent if it is
+  ],
+  providers: [
+    // Provide the interceptor
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
+  // No bootstrap array here if AppComponent is standalone and bootstrapped in main.ts
+  // bootstrap: [AppComponent] // Remove or comment out if AppComponent is standalone
 })
 export class AppModule { }
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { DocumentModule } from './document/document.module';
-import { NotificationModule } from './notification/notification.module';
-import { User } from './user/user.entity';
-import { UserModule } from './user/user.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { SectorModule } from './sector/sector.module';
-import { Sector } from './sector/sector.entity';
 
-
-@Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'signature_db',
-      entities: [User, Sector],
-      synchronize: true,
-    }),
-    UserModule,
-    AuthModule,
-    DocumentModule,
-    SectorModule,
-    NotificationModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
-})
-export class AppModule {}

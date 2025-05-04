@@ -63,7 +63,8 @@
               "buildTarget": "signature-platform:build:production"
             },
             "development": {
-              "buildTarget": "signature-platform:build:development"
+              "buildTarget": "signature-platform:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
