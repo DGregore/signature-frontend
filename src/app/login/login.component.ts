@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'; // Import OnInit
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -6,31 +6,37 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; // Import progress spinner
+import { AuthService } from '../services/auth.service'; // Import AuthService
+import { finalize } from 'rxjs/operators'; // Import finalize
 
 @Component({
   selector: 'app-login',
-  standalone: true, // Ensure it's standalone
+  standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    ReactiveFormsModule, 
-    RouterModule, 
-    MatCardModule, 
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MatCardModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatProgressSpinnerModule, // Add progress spinner module
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit { // Implement OnInit
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   error = '';
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    console.log('LoginComponent constructor called'); // Add log
-    // Criar o formulário de login
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService // Inject AuthService
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -38,26 +44,40 @@ export class LoginComponent implements OnInit { // Implement OnInit
   }
 
   ngOnInit(): void {
-    console.log('LoginComponent ngOnInit called'); // Add log
+    // Optional: Redirect if already logged in
+    if (this.authService.getAccessToken()) {
+      // Maybe redirect to dashboard or intended route
+      // this.router.navigate(['/dashboard']);
+    }
   }
 
-  // Método para fazer login
-  Login() {
+  // Método para fazer login usando AuthService
+  login() { // Renamed from Login to login (convention)
     if (this.loginForm.invalid) {
+      this.error = 'Por favor, preencha o email e a senha corretamente.';
       return;
     }
 
     this.loading = true;
+    this.error = ''; // Clear previous errors
     const { email, password } = this.loginForm.value;
 
-    // Simulação de login (substitua com sua lógica de autenticação real)
-    if (email === 'admin@admin.com' && password === '123456') {
-      // Redireciona para o Dashboard
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.error = 'Credenciais inválidas. Tente novamente.';
-      this.loading = false;
-    }
+    this.authService.login({ email, password })
+      .pipe(
+        finalize(() => this.loading = false) // Ensure loading is set to false after completion/error
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Login successful:', response);
+          // Redirect to the Dashboard upon successful login
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          console.error('Login error:', err);
+          // Display error message from backend or a generic one
+          this.error = err.message || 'Falha no login. Verifique suas credenciais.';
+        }
+      });
   }
 }
 
