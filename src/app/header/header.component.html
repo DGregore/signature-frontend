@@ -1,0 +1,11 @@
+<header class="app-header">
+  <div class="logo">
+    <a routerLink="/">Assinatura Digital</a> <!-- Ou logo img -->
+  </div>
+  <div class="spacer"></div>
+  <div class="user-info" *ngIf="currentUser">
+    <span>Olá, {{ currentUser.name }}</span>
+    <button (click)="logout()">Sair</button>
+  </div>
+</header>
+

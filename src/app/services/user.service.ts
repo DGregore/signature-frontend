@@ -39,11 +39,11 @@ export class UserService {
   }
 
   // Corrigido: Nome do método para 'createUser' para consistência com backend, aceita objeto User
-  createUser(user: User): Observable<User> {
+  createUser(user: Omit<User, 'id'>): Observable<User> {
     // Removendo o ID, pois é gerado pelo backend
     // A senha deve ser incluída aqui para criação
-    const { id, ...userData } = user;
-    return this.http.post<User>(this.apiUrl, userData);
+    // The input 'user' is already Omit<User, 'id'>, so pass it directly
+    return this.http.post<User>(this.apiUrl, user);
   }
 
   // Corrigido: Nome do método para 'updateUser', aceita ID e objeto User

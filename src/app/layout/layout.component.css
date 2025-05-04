@@ -1,0 +1,39 @@
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
+}
+
+.main-content {
+  display: flex;
+  flex-grow: 1; /* Takes remaining vertical space */
+  overflow: hidden; /* Prevent scrolling issues */
+}
+
+app-sidebar {
+  width: 240px; /* Fixed width for sidebar */
+  flex-shrink: 0; /* Prevent sidebar from shrinking */
+  background-color: #f4f4f4; /* Example background */
+  border-right: 1px solid #ddd;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.content-area {
+  flex-grow: 1; /* Takes remaining horizontal space */
+  padding: 20px;
+  overflow-y: auto; /* Allow scrolling for main content */
+  background-color: #fff;
+}
+
+/* Basic styling for header (can be moved to header.component.css) */
+app-header {
+  height: 60px; /* Fixed height for header */
+  flex-shrink: 0; /* Prevent header from shrinking */
+  background-color: #333;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid #555;
+}
+

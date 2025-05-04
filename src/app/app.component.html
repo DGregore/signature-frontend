@@ -1,28 +1,2 @@
-<!-- Layout principal com menu lateral, exibido apenas se showLayout for true -->
-<mat-sidenav-container class="sidenav-container" *ngIf="showLayout">
-  <mat-sidenav #sidenav mode="side" opened class="sidenav">
-    <mat-nav-list>
-      <a mat-list-item routerLink="/dashboard" (click)="sidenav.close()">Dashboard</a>
-      <a mat-list-item routerLink="/upload-document" (click)="sidenav.close()">Upload de Documentos</a>
-      <a mat-list-item routerLink="/document-list" (click)="sidenav.close()">Meus Documentos</a>
-      <a mat-list-item routerLink="/settings" (click)="sidenav.close()">Configurações</a>
-      <a mat-list-item routerLink="/logout" (click)="sidenav.close()">Logout</a>
-    </mat-nav-list>
-  </mat-sidenav>
-  
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span>Plataforma de Documentos</span>
-    </mat-toolbar>
-
-    <!-- O conteúdo das rotas protegidas será renderizado aqui -->
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
-<!-- Router outlet para rotas públicas (sem layout), exibido apenas se showLayout for false -->
-<router-outlet *ngIf="!showLayout"></router-outlet>
+<router-outlet></router-outlet>
 

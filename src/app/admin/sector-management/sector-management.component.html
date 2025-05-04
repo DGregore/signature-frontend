@@ -1,10 +1,10 @@
 <h2>Gerenciamento de Setores</h2>
 <form (ngSubmit)="addSector()">
   <label for="name">Nome do Setor:</label>
-  <input type="text" id="name" [( ngMode )]="newSector.name" name="name" required />
+  <input type="text" id="name" [(ngModel)]="newSector.name" name="name" required />
 
   <label for="description">Descrição:</label>
-  <textarea id="description" [( ngModel )]="newSector.description" name="description" required></textarea>
+  <textarea id="description" [(ngModel)]="newSector.description" name="description"></textarea>
 
   <button type="submit">Adicionar Setor</button>
 </form>

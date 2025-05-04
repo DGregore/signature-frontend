@@ -1,0 +1,10 @@
+<nav class="sidebar-nav">
+  <ul>
+    <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+    <li><a routerLink="/documentos" routerLinkActive="active">Documentos</a></li>
+    <!-- Add more links as needed -->
+    <li *ngIf="isAdmin"><a routerLink="/admin/usuarios" routerLinkActive="active">Gerenciar Usuários</a></li>
+    <li *ngIf="isAdmin"><a routerLink="/admin/setores" routerLinkActive="active">Gerenciar Setores</a></li>
+  </ul>
+</nav>
+
