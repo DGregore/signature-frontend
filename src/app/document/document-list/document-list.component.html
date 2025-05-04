@@ -1,32 +1,49 @@
-<div class="document-list-container">
-    <mat-card class="document-list-card">
-      <mat-card-header>
-        <mat-card-title>Meus Documentos</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-table [dataSource]="documents">
-          <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
-            <mat-cell *matCellDef="let document">{{ document.name }}</mat-cell>
-          </ng-container>
-  
-          <ng-container matColumnDef="status">
-            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-            <mat-cell *matCellDef="let document">{{ document.status }}</mat-cell>
-          </ng-container>
-  
-          <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef>Ações</mat-header-cell>
-            <mat-cell *matCellDef="let document">
-              <button mat-button>Visualizar</button>
-              <button mat-button>Assinar</button>
-            </mat-cell>
-          </ng-container>
-  
-          <mat-header-row *matHeaderRowDef="['name', 'status', 'actions']"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: ['name', 'status', 'actions'];"></mat-row>
-        </mat-table>
-      </mat-card-content>
-    </mat-card>
+<div class="list-container">
+  <h2>Meus Documentos</h2> <!-- Title can be dynamic based on listType -->
+
+  <div *ngIf="isLoading" class="loading-indicator">
+    Carregando documentos...
+    <!-- Add a spinner here if desired -->
   </div>
-  
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && documents.length === 0 && !errorMessage" class="empty-list">
+    Nenhum documento encontrado.
+  </div>
+
+  <table *ngIf="!isLoading && documents.length > 0">
+    <thead>
+      <tr>
+        <th>Nome do Arquivo</th>
+        <th>Status</th>
+        <th>Data de Criação</th>
+        <th>Próximo Signatário</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Assuming documents are sorted by backend or using OrderByPipe if needed -->
+      <tr *ngFor="let doc of documents | orderBy:
+      \"createdAt\":\"desc\"">
+        <td>{{ doc.originalFilename }}</td>
+        <td>{{ doc.status }}</td> <!-- Consider a pipe for better status display -->
+        <td>{{ doc.createdAt | date:
+        \"dd/MM/yyyy HH:mm\":\"UTC\" }}</td>
+        <td>{{ doc.signatories | nextSignatory }}</td>
+        <td class="actions">
+          <button (click)="viewDocument(doc.id)" title="Visualizar">👁️</button>
+          <button (click)="downloadDocument(doc.id, doc.originalFilename)" title="Baixar">⬇️</button>
+          <!-- Show Sign button only if it's the current user's turn -->
+          <button *ngIf="doc.status === \'SIGNING\' && (doc.signatories | nextSignatory) === (currentUser?.name || currentUser?.email)" (click)="signDocument(doc.id)" title="Assinar">✍️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Add pagination controls here if implemented -->
+
+</div>
+

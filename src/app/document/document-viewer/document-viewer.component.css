@@ -1,0 +1,175 @@
+.viewer-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.loading-indicator,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error-message {
+  color: #f44336;
+}
+
+.loading-indicator mat-spinner {
+  margin: 1rem auto;
+}
+
+.document-content {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.viewer-actions {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: right;
+}
+
+.viewer-actions button {
+  padding: 0.5rem 1rem;
+  background-color: #6c757d; /* Secondary color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.viewer-actions button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.viewer-actions button:not(:disabled):hover {
+  background-color: #5a6268;
+}
+
+.pdf-viewer-area {
+  margin-bottom: 2rem;
+}
+
+/* Style for ng2-pdf-viewer */
+pdf-viewer {
+  border: 1px solid #ccc;
+  display: block; /* Ensure it takes block space */
+}
+
+.signature-flow {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.signature-flow h3 {
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+.signature-flow ul {
+  list-style: none;
+  padding: 0;
+}
+
+.signature-flow li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 0.5rem; /* Spacing between elements */
+}
+
+.signature-flow li:last-child {
+  border-bottom: none;
+}
+
+.signature-flow .order {
+  font-weight: bold;
+  min-width: 20px; /* Ensure alignment */
+}
+
+.signature-flow .name {
+  flex-grow: 1; /* Take available space */
+  margin-right: 0.5rem;
+}
+
+.signature-flow .status {
+  font-style: italic;
+  font-size: 0.9em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  color: white;
+}
+
+.signature-flow .pending .status {
+  background-color: #ffc107; /* Warning yellow */
+}
+
+.signature-flow .signed .status {
+  background-color: #4caf50; /* Success green */
+}
+
+.signature-flow .rejected .status {
+  background-color: #f44336; /* Danger red */
+}
+
+.signature-flow .timestamp,
+.signature-flow .reason {
+  font-size: 0.85em;
+  color: #777;
+  margin-left: 0.5rem;
+}
+
+.sign-action {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 2px dashed #007bff;
+  border-radius: 4px;
+  background-color: #e7f3ff;
+  text-align: center;
+}
+
+.sign-action p {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.sign-action button {
+  padding: 0.75rem 1.5rem;
+  background-color: #28a745; /* Success green */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease;
+}
+
+.sign-action button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.sign-action button:not(:disabled):hover {
+  background-color: #218838;
+}
+

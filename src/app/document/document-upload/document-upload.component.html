@@ -1,15 +1,54 @@
 <div class="upload-container">
-  <mat-card class="upload-card">
-    <mat-card-header>
-      <mat-card-title>Upload de Documento</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="uploadForm" (ngSubmit)="onUpload()">
-        <mat-form-field appearance="fill">
-          <mat-label>Nome do Documento</mat-label>
-          <input matInput formControlName="name" />
-        </mat-form-field>
+  <h2>Enviar Novo Documento para Assinatura</h2>
 
-        <mat-form-field appearance="fill">
-          <mat-label>Descrição</mat-label>
-          <input matInput formControlName="description" />
+  <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+
+    <!-- File Input -->
+    <div class="form-group">
+      <label for="fileInput">Selecione o Documento (PDF):</label>
+      <input type="file" id="fileInput" accept=".pdf" (change)="onFileSelected($event)" formControlName="fileInput">
+      <div *ngIf="uploadForm.get(\'fileInput\')?.invalid && (uploadForm.get(\'fileInput\')?.dirty || uploadForm.get(\'fileInput\')?.touched)" class="error-message">
+        É necessário selecionar um arquivo PDF.
+      </div>
+      <div *ngIf="selectedFile" class="file-info">
+        Arquivo selecionado: {{ selectedFile.name }} ({{ selectedFile.size | number:
+        \'1.0-2\
+        ':\'pt-BR\' }} bytes)
+      </div>
+    </div>
+
+    <!-- Signatory Search and Add -->
+    <div class="form-group">
+      <label for="searchUser">Adicionar Signatário:</label>
+      <input type="text" id="searchUser" [(ngModel)]="searchQuery" (input)="searchUsers()" placeholder="Buscar usuário por nome ou email..." [ngModelOptions]="{standalone: true}">
+      <ul *ngIf="searchResults.length > 0" class="search-results">
+        <li *ngFor="let user of searchResults" (click)="addSignatory(user)">
+          {{ user.name }} ({{ user.email }})
+        </li>
+      </ul>
+    </div>
+
+    <!-- Signatory List (Draggable) -->
+    <div class="form-group signatory-list" cdkDropList (cdkDropListDropped)="drop($event)">
+      <label>Ordem dos Signatários (arraste para reordenar):</label>
+      <div *ngIf="signatories.controls.length === 0 && uploadForm.get(\'signatories\')?.touched" class="error-message">
+        Adicione pelo menos um signatário.
+      </div>
+      <div *ngFor="let signatoryControl of signatories.controls; let i = index" class="signatory-item" cdkDrag>
+        <span class="drag-handle" cdkDragHandle>⠿</span>
+        <span>{{ i + 1 }}. {{ signatoryControl.value.name }} ({{ signatoryControl.value.email }})</span>
+        <button type="button" (click)="removeSignatory(i)" class="remove-btn">×</button>
+      </div>
+    </div>
+
+    <!-- Submit Button and Messages -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="uploadForm.invalid || isLoading">{{ isLoading ? \'Enviando...\' : \'Enviar Documento\' }}</button>
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner> <!-- Loading indicator -->
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+    </div>
+
+  </form>
+</div>
+
