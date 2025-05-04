@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; // Import OnInit
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
+  standalone: true, // Ensure it's standalone
   imports: [
     CommonModule, 
     FormsModule, 
@@ -18,22 +19,26 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit { // Implement OnInit
   loginForm: FormGroup;
   loading = false;
   error = '';
 
   constructor(private fb: FormBuilder, private router: Router) {
+    console.log('LoginComponent constructor called'); // Add log
     // Criar o formulário de login
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
+  }
+
+  ngOnInit(): void {
+    console.log('LoginComponent ngOnInit called'); // Add log
   }
 
   // Método para fazer login
@@ -55,3 +60,4 @@ export class LoginComponent {
     }
   }
 }
+

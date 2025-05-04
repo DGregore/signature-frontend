@@ -1,0 +1,100 @@
+<h1>Configurações do Sistema</h1>
+
+<mat-tab-group animationDuration="0ms">
+  <!-- Aba de Usuários -->
+  <mat-tab label="Usuários">
+    <div class="tab-content">
+      <h2>Gerenciamento de Usuários</h2>
+      <button mat-raised-button color="primary" (click)="openUserDialog()" class="add-button">
+        <mat-icon>add</mat-icon> Adicionar Usuário
+      </button>
+
+      <div class="mat-elevation-z8 table-container">
+        <table mat-table [dataSource]="users">
+          <!-- Coluna Nome -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nome </th>
+            <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+          </ng-container>
+
+          <!-- Coluna Email -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+          </ng-container>
+
+          <!-- Coluna Setor (Adicionada) -->
+          <ng-container matColumnDef="sector">
+            <th mat-header-cell *matHeaderCellDef> Setor </th>
+            <!-- Acessa o nome do setor através do objeto user.sector -->
+            <!-- O '?' evita erro se user.sector for null/undefined -->
+            <td mat-cell *matCellDef="let user"> {{user.sector?.name || 'N/A'}} </td>
+          </ng-container>
+
+          <!-- Coluna Ações -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let user">
+              <button mat-icon-button color="primary" (click)="openUserDialog(user)" aria-label="Editar usuário">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteUser(user.id)" aria-label="Excluir usuário">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Certifique-se que 'sector' está incluído em displayedUserColumns no .ts -->
+          <tr mat-header-row *matHeaderRowDef="displayedUserColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedUserColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedUserColumns.length">Nenhum usuário encontrado.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!-- Aba de Setores -->
+  <mat-tab label="Setores">
+    <div class="tab-content">
+      <h2>Gerenciamento de Setores</h2>
+      <button mat-raised-button color="primary" (click)="openSectorDialog()" class="add-button">
+        <mat-icon>add</mat-icon> Adicionar Setor
+      </button>
+
+      <div class="mat-elevation-z8 table-container">
+        <table mat-table [dataSource]="sectors">
+          <!-- Coluna Nome -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nome do Setor </th>
+            <td mat-cell *matCellDef="let sector"> {{sector.name}} </td>
+          </ng-container>
+
+          <!-- Coluna Ações -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let sector">
+              <button mat-icon-button color="primary" (click)="openSectorDialog(sector)" aria-label="Editar setor">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteSector(sector.id)" aria-label="Excluir setor">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedSectorColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedSectorColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+             <td class="mat-cell" [attr.colspan]="displayedSectorColumns.length">Nenhum setor encontrado.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </mat-tab>
+
+</mat-tab-group>
+

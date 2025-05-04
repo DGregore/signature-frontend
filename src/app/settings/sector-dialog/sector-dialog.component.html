@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Editar Setor' : 'Adicionar Novo Setor' }}</h2>
+
+<mat-dialog-content [formGroup]="sectorForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Nome do Setor</mat-label>
+    <input matInput formControlName="name" required>
+    <mat-error *ngIf="sectorForm.get('name')?.hasError('required')">Nome do setor é obrigatório</mat-error>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!sectorForm.valid">Salvar</button>
+</mat-dialog-actions>
+

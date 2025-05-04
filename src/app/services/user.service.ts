@@ -1,46 +1,62 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { User } from '../models/user.model'; // Importar do arquivo de modelo
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private apiUrl = 'http://localhost:3000/api/users'; // A URL para a API de usuários no backend
+  private apiUrl = 'http://localhost:3000/api/users'; // A URL base para a API de usuários no backend
 
   constructor(private http: HttpClient) { }
 
-  // Método para fazer o login
+  // --- Autenticação e Perfil (Mantidos como estavam) ---
   login(email: string, password: string): Observable<any> {
-    const body = { email, password };
-    return this.http.post(`${this.apiUrl}/login`, body);
+    return this.http.post(`${this.apiUrl}/login`, { email, password });
   }
 
-  // Método para registrar um novo usuário
   register(name: string, email: string, password: string): Observable<any> {
-    const body = { name, email, password };
-    return this.http.post(`${this.apiUrl}/register`, body);
+    return this.http.post(`${this.apiUrl}/register`, { name, email, password });
   }
 
-  // Método para buscar o perfil do usuário
-  getProfile(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/profile`);
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/profile`);
   }
 
-  getUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`);  // A URL que retorna a lista de usuários
-  }
-
-  addUser(name: string, email: string, password: string): Observable<any> {
-    const body = { name, email, password };
-    return this.http.post(`${this.apiUrl}/add`, body);  // A URL que cria um novo usuário
-  }
-
-  // Método para atualizar as informações do usuário
   updateProfile(name: string, email: string): Observable<any> {
-    const body = { name, email };
-    return this.http.put(`${this.apiUrl}/profile`, body);
+    return this.http.put(`${this.apiUrl}/profile`, { name, email });
   }
 
+  // --- CRUD de Usuários (Administração) ---
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
+  }
+
+  getUserById(id: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/${id}`);
+  }
+
+  // Corrigido: Nome do método para 'createUser' para consistência com backend, aceita objeto User
+  createUser(user: User): Observable<User> {
+    // Removendo o ID, pois é gerado pelo backend
+    // A senha deve ser incluída aqui para criação
+    const { id, ...userData } = user;
+    return this.http.post<User>(this.apiUrl, userData);
+  }
+
+  // Corrigido: Nome do método para 'updateUser', aceita ID e objeto User
+  updateUser(id: number, user: Partial<User>): Observable<User> {
+    // Enviando apenas os dados que podem ser atualizados
+    // O backend decidirá o que fazer com a senha, se enviada
+    // Usar Partial<User> permite enviar apenas campos modificados
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, user); // Usar PATCH para atualização parcial
+  }
+
+  // Corrigido: Nome do método para 'deleteUser'
+  deleteUser(id: number): Observable<void> { // Retorna void pois DELETE não costuma ter corpo
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
+

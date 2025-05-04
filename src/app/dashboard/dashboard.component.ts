@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true, // Add standalone: true
   imports: [
     CommonModule, 
     FormsModule, 
@@ -16,7 +17,6 @@ import { RouterModule } from '@angular/router';
     MatCardModule, 
     MatButtonModule,
     MatFormFieldModule,
-
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -31,3 +31,4 @@ export class DashboardComponent implements OnInit{
     // Lógica para buscar dados dinâmicos do backend, se necessário.
   }
 }
+

@@ -5,9 +5,11 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input'; // Import MatInputModule
 
 @Component({
   selector: 'app-upload-document',
+  standalone: true, // Add standalone: true
   imports: [
     CommonModule, 
     FormsModule, 
@@ -15,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatCardModule, 
     MatButtonModule,
     MatFormFieldModule,
-
+    MatInputModule // Add MatInputModule here
   ],
   templateUrl: './document-upload.component.html',
   styleUrls: ['./document-upload.component.css']
@@ -59,3 +61,4 @@ export class UploadDocumentComponent {
     );
   }
 }
+
