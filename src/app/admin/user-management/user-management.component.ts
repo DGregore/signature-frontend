@@ -52,7 +52,8 @@ export class UserManagementComponent implements OnInit {
   editUser(user: User) {
     this.editingUser = true;
     // Create a copy for editing, omit password initially
-    this.currentUser = { ...user, password: '' }; // Clear password field for editing
+    // Ensure sectorId is treated correctly (might be null from backend)
+    this.currentUser = { ...user, password: '', sectorId: user.sectorId ?? undefined };
   }
 
   cancelEdit() {
@@ -71,25 +72,63 @@ export class UserManagementComponent implements OnInit {
   }
 
   saveUser() {
-    if (this.editingUser && this.currentUser.id) {
-      // Update existing user
-      const { id, password, ...userData } = this.currentUser;
-      const updatePayload: Partial<User> = { ...userData };
-      // Only include password in payload if it's not empty
-      if (password) {
-        updatePayload.password = password;
+    // Prepare the data payload, converting sectorId if present
+    const userDataPayload = { ...this.currentUser };
+
+    // Handle sectorId: Convert to number if present and valid, otherwise remove
+    if (userDataPayload.sectorId !== undefined && userDataPayload.sectorId !== null && String(userDataPayload.sectorId).trim() !== '') {
+      const parsedSectorId = parseInt(String(userDataPayload.sectorId), 10);
+      if (!isNaN(parsedSectorId) && parsedSectorId > 0) {
+        userDataPayload.sectorId = parsedSectorId;
+      } else {
+        // Invalid value (e.g., "0", non-numeric string), treat as no selection
+        console.warn('Invalid sectorId provided, removing from payload:', userDataPayload.sectorId);
+        delete userDataPayload.sectorId;
       }
-      this.userService.updateUser(id, updatePayload).subscribe(() => {
-        this.loadUsers();
-        this.cancelEdit();
+    } else {
+      // No sector selected or invalid initial value (null, undefined, empty string)
+      delete userDataPayload.sectorId;
+    }
+
+    if (this.editingUser && userDataPayload.id) {
+      // --- Update existing user ---
+      const { id, password, ...updateData } = userDataPayload;
+      const finalUpdatePayload: Partial<User> = { ...updateData };
+
+      // Only include password in payload if it's not empty
+      if (password && password.trim() !== '') {
+        finalUpdatePayload.password = password;
+      } else {
+        // Ensure password field is not sent if empty during update
+        delete finalUpdatePayload.password;
+      }
+
+      console.log('Updating user with payload:', finalUpdatePayload);
+      this.userService.updateUser(id, finalUpdatePayload).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.cancelEdit();
+        },
+        error: (err) => console.error('Error updating user:', err) // Add error logging
       });
     } else {
-      // Add new user
-      // Ensure password is provided for new user (handled by 'required' in template)
-      const { id, ...newUserData } = this.currentUser;
-      this.userService.createUser(newUserData as Omit<User, 'id'>).subscribe(() => { // Cast needed as password might be empty string initially
-        this.loadUsers();
-        this.resetForm();
+      // --- Add new user ---
+      const { id, ...newUserData } = userDataPayload;
+
+      // Ensure password is provided for new user
+      if (!newUserData.password || newUserData.password.trim() === '') {
+         console.error('Password is required for new user.');
+         // TODO: Show a user-friendly message
+         return; // Stop execution if password is missing
+      }
+
+      console.log('Creating user with payload:', newUserData);
+      this.userService.createUser(newUserData as Omit<User, 'id'>).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.resetForm();
+        },
+        error: (err) => console.error('Error creating user:', err) // Add error logging
       });
     }
   }
@@ -107,8 +146,8 @@ export class UserManagementComponent implements OnInit {
   }
 
   // Helper function to get sector name for display
-  getSectorName(sectorId: number | undefined): string {
-    if (sectorId === undefined) {
+  getSectorName(sectorId: number | undefined | null): string {
+    if (sectorId === undefined || sectorId === null) {
       return 'Nenhum';
     }
     const sector = this.sectors.find(s => s.id === sectorId);

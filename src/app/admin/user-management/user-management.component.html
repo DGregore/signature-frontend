@@ -68,7 +68,7 @@
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.role }}</td>
-        <td>{{ getSectorName(user.sectorId) }}</td> <!-- Usar função para nome do setor -->
+        <td>{{ user.sector ? user.sector.name : 'Nenhum' }}</td> <!-- Usar objeto sector diretamente -->
         <td>
           <button (click)="editUser(user)">Editar</button>
           <button (click)="confirmDelete(user.id)">Excluir</button>

@@ -73,8 +73,8 @@ export class DocumentUploadComponent implements OnInit {
     if (this.searchQuery.trim().length > 2) {
       // Assuming userService.searchUsers exists and returns Observable<User[]>
       this.userService.searchUsers(this.searchQuery).subscribe({
-        next: (users) => this.searchResults = users,
-        error: (err) => console.error('Erro ao buscar usuários:', err)
+        next: (users: User[]) => this.searchResults = users,
+        error: (err: any) => console.error('Erro ao buscar usuários:', err)
       });
     } else {
       this.searchResults = [];

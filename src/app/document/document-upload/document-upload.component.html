@@ -7,13 +7,11 @@
     <div class="form-group">
       <label for="fileInput">Selecione o Documento (PDF):</label>
       <input type="file" id="fileInput" accept=".pdf" (change)="onFileSelected($event)" formControlName="fileInput">
-      <div *ngIf="uploadForm.get(\'fileInput\')?.invalid && (uploadForm.get(\'fileInput\')?.dirty || uploadForm.get(\'fileInput\')?.touched)" class="error-message">
+      <div *ngIf="uploadForm.get('fileInput')?.invalid && (uploadForm.get('fileInput')?.dirty || uploadForm.get('fileInput')?.touched)" class="error-message">
         É necessário selecionar um arquivo PDF.
       </div>
       <div *ngIf="selectedFile" class="file-info">
-        Arquivo selecionado: {{ selectedFile.name }} ({{ selectedFile.size | number:
-        \'1.0-2\
-        ':\'pt-BR\' }} bytes)
+        Arquivo selecionado: {{ selectedFile.name }} ({{ selectedFile.size | number:'1.0-2':'pt-BR' }} bytes)
       </div>
     </div>
 
@@ -31,7 +29,7 @@
     <!-- Signatory List (Draggable) -->
     <div class="form-group signatory-list" cdkDropList (cdkDropListDropped)="drop($event)">
       <label>Ordem dos Signatários (arraste para reordenar):</label>
-      <div *ngIf="signatories.controls.length === 0 && uploadForm.get(\'signatories\')?.touched" class="error-message">
+      <div *ngIf="signatories.controls.length === 0 && uploadForm.get('signatories')?.touched" class="error-message">
         Adicione pelo menos um signatário.
       </div>
       <div *ngFor="let signatoryControl of signatories.controls; let i = index" class="signatory-item" cdkDrag>
@@ -43,7 +41,7 @@
 
     <!-- Submit Button and Messages -->
     <div class="form-actions">
-      <button type="submit" [disabled]="uploadForm.invalid || isLoading">{{ isLoading ? \'Enviando...\' : \'Enviar Documento\' }}</button>
+      <button type="submit" [disabled]="uploadForm.invalid || isLoading">{{ isLoading ? 'Enviando...' : 'Enviar Documento' }}</button>
       <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner> <!-- Loading indicator -->
       <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
       <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>

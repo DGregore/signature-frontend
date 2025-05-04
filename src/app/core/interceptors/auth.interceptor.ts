@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, filter, take } from 'rxjs/operators';
-import { AuthService } from '../services/auth.service'; // Adjust path if needed
+import { AuthService } from '../../services/auth.service'; // Adjust path if needed
 import { Router } from '@angular/router';
 
 @Injectable()

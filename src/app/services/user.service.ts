@@ -58,5 +58,12 @@ export class UserService {
   deleteUser(id: number): Observable<void> { // Retorna void pois DELETE não costuma ter corpo
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  // Método para buscar usuários (necessita endpoint no backend)
+  searchUsers(query: string): Observable<User[]> {
+    // Assumindo um endpoint /api/users/search?q=query
+    // Ajuste o endpoint conforme a implementação real do backend
+    return this.http.get<User[]>(`${this.apiUrl}/search`, { params: { q: query } });
+  }
 }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router'; // Import RouterModule
 import { CommonModule, DatePipe } from '@angular/common'; // Import CommonModule and DatePipe
-import { Subscription } from 'rxjs';
+import { Subscription, catchError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DocumentService } from '../../services/document.service';
 import { AuthService } from '../../services/auth.service';
@@ -87,7 +87,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         this.documents = docs;
         this.isLoading = false;
       }),
-      catchError(error => {
+      catchError((error: any) => {
         this.errorMessage = `Erro ao buscar documentos: ${error.message}`;
         this.isLoading = false;
         this.documents = [];
@@ -112,7 +112,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
         window.URL.revokeObjectURL(url);
         a.remove();
       },
-      error: (err) => this.errorMessage = `Erro ao baixar documento: ${err.message}`
+      error: (err: any) => this.errorMessage = `Erro ao baixar documento: ${err.message}`
     });
   }
 

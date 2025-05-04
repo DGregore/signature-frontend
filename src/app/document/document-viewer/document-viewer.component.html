@@ -19,46 +19,75 @@
 
     <div class="pdf-viewer-area">
       <pdf-viewer
+        #pdfViewerComponent <!-- Add template reference variable -->
         [src]="pdfSrc"
         [render-text]="true"
         [original-size]="false"
-        style="display: block; width: 100%; height: 600px; border: 1px solid #ccc;"
+        style="display: block; width: 100%; height: 600px; border: 1px solid #ccc; cursor: crosshair;" <!-- Add cursor -->
         (error)="errorMessage = \'Erro ao carregar o PDF.\'"
+        (page-rendered)="onPageRendered($event)"
       ></pdf-viewer>
+      <!-- Placeholder for signature position marker -->
+      <div *ngIf="signaturePosition" class="signature-marker" [style.left.px]="signaturePosition.x" [style.top.px]="signaturePosition.y">X</div>
     </div>
 
+    <!-- Signature Pad Section -->
+    <div *ngIf="isUserNextSignatory && !documentSignedOrRejected()" class="signature-pad-section">
+      <h3>Sua Assinatura</h3>
+      <p>Clique no PDF acima para definir a posição da assinatura (página {{ signaturePosition?.page || \'N/A\' }}).</p>
+      <div class="signature-pad-container">
+        <canvas #signatureCanvas width="400" height="200" style="border: 1px solid #ccc;"></canvas>
+      </div>
+      <div class="signature-pad-actions">
+        <button (click)="clearSignature()">Limpar</button>
+        <button (click)="applySignature()" [disabled]="isLoading || !signaturePosition">Aplicar Assinatura</button>
+      </div>
+    </div>
+
+    <!-- Signature Flow Display -->
     <div class="signature-flow">
       <h3>Fluxo de Assinatura</h3>
       <div *ngIf="!document.signatories || document.signatories.length === 0">
         Nenhum signatário definido.
       </div>
       <ul *ngIf="document.signatories && document.signatories.length > 0">
-        <!-- Order signatories by order -->
-        <li *ngFor="let signatory of document.signatories | orderBy:
-        \"order\":\"asc\"" [ngClass]="{
-            \"pending\": signatory.status === \"PENDING\",
-            \"signed\": signatory.status === \"SIGNED\",
-            \"rejected\": signatory.status === \"REJECTED\"
+        <li *ngFor="let signatory of document.signatories | orderBy:\'order\':\'asc\'" [ngClass]="{
+            \'pending\': signatory.status === \'PENDING\',
+            \'signed\': signatory.status === \'SIGNED\',
+            \'rejected\': signatory.status === \'REJECTED\'
           }">
           <span class="order">{{ signatory.order }}.</span>
-          <span class="name">{{ signatory.name || signatory.email || (\"Usuário ID: \" + signatory.userId) }}</span>
+          <span class="name">{{ signatory.name || signatory.email || (\'Usuário ID: \' + signatory.userId) }}</span>
           <span class="status">({{ signatory.status }})</span>
-          <span *ngIf="signatory.signedAt" class="timestamp"> - {{ signatory.signedAt | date:
-          \"dd/MM/yyyy HH:mm\":\"UTC\" }}</span>
-          <span *ngIf="signatory.status === \"REJECTED\" && signatory.rejectionReason" class="reason"> - Motivo: {{ signatory.rejectionReason }}</span>
+          <span *ngIf="signatory.signedAt" class="timestamp"> - {{ signatory.signedAt | date:\'dd/MM/yyyy HH:mm\':\'UTC\' }}</span>
+          <span *ngIf="signatory.status === \'REJECTED\' && signatory.rejectionReason" class="reason"> - Motivo: {{ signatory.rejectionReason }}</span>
         </li>
       </ul>
     </div>
 
-    <div *ngIf="isUserNextSignatory" class="viewer-actions sign-action">
-      <p>É a sua vez de assinar este documento.</p>
-      <button (click)="signDocument()" [disabled]="isLoading">Assinar Agora</button>
-      <!-- Add reject button if needed -->
-    </div>
-
-    <div *ngIf="signActionRequested && isUserNextSignatory && !isLoading">
-      <!-- Automatically trigger sign action if requested via query param -->
-      {{ signDocument() }} <!-- This is a bit hacky, consider a better way -->
+    <!-- Audit Log Section -->
+    <div class="audit-log-section">
+      <h3>Histórico do Documento</h3>
+      <div *ngIf="isLoadingLogs" class="loading-indicator">
+        Carregando histórico...
+        <mat-spinner diameter="30"></mat-spinner>
+      </div>
+      <div *ngIf="logsErrorMessage" class="error-message">
+        {{ logsErrorMessage }}
+      </div>
+      <div *ngIf="!isLoadingLogs && auditLogs.length === 0 && !logsErrorMessage">
+        Nenhum histórico encontrado para este documento.
+      </div>
+      <ul *ngIf="!isLoadingLogs && auditLogs.length > 0" class="audit-log-list">
+        <li *ngFor="let log of auditLogs">
+          <span class="timestamp">{{ log.timestamp | date:
+          \'dd/MM/yyyy HH:mm:ss\':\'UTC\' }}</span> -
+          <span class="user">{{ log.userName || (log.userId ? \'Usuário ID: \' + log.userId : \'Sistema\') }}</span> -
+          <span class="action">{{ log.action }}</span>
+          <!-- Optionally display details -->
+          <!-- <span *ngIf="log.details"> - {{ log.details | json }}</span> -->
+        </li>
+      </ul>
     </div>
 
   </div>

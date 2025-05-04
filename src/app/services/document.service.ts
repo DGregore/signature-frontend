@@ -3,6 +3,7 @@ import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Document, DocumentSignatory, SignatureData } from '../models/document.model';
+import { AuditLog } from '../models/audit-log.model'; // Moved import here
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +22,7 @@ export class DocumentService {
   uploadDocument(file: File, metadata: { signatories: Partial<DocumentSignatory>[] }): Observable<Document> {
     const formData = new FormData();
     formData.append('file', file, file.name);
-    // Append metadata fields individually or as a JSON string
-    // Backend needs to be adapted to parse this correctly (e.g., using @Body for JSON part)
     formData.append('metadata', JSON.stringify(metadata));
-
-    // Note: When sending FormData, HttpClient sets the Content-Type header automatically.
-    // Do not set it manually to 'multipart/form-data' as it might miss the boundary.
     return this.http.post<Document>(`${this.apiUrl}/upload`, formData).pipe(
       catchError(this.handleError)
     );
@@ -68,10 +64,8 @@ export class DocumentService {
    * @returns Observable<Blob> The PDF file content as a Blob.
    */
   downloadDocument(id: number): Observable<Blob> {
-    // The backend endpoint might be /api/documents/:id/file or similar
-    // Assuming /api/documents/:id/download returns the blob directly
     return this.http.get(`${this.apiUrl}/${id}/download`, {
-      responseType: 'blob' // Important: expect a Blob response
+      responseType: 'blob'
     }).pipe(
       catchError(this.handleError)
     );
@@ -107,9 +101,25 @@ export class DocumentService {
    * @returns Observable<DocumentSignatory> The updated signatory record.
    */
   signDocument(documentId: number, signatureData: SignatureData): Observable<DocumentSignatory> {
-    // Endpoint might be /api/documents/:id/signatures or /api/signatures
-    // Assuming /api/documents/:id/sign for simplicity
     return this.http.post<DocumentSignatory>(`${this.apiUrl}/${documentId}/sign`, signatureData).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Retrieves audit logs for a specific entity.
+   * @param entityType The type of the entity (e.g., 'Document').
+   * @param entityId The ID of the entity.
+   * @returns Observable<AuditLog[]>
+   */
+  getAuditLogs(entityType: string, entityId: number): Observable<AuditLog[]> {
+    // Assuming a separate endpoint for audit logs, adjust if needed
+    const auditApiUrl = '/api/audit-logs';
+    let params = new HttpParams()
+      .set('entityType', entityType)
+      .set('entityId', entityId.toString());
+
+    return this.http.get<AuditLog[]>(auditApiUrl, { params }).pipe(
       catchError(this.handleError)
     );
   }
@@ -122,23 +132,18 @@ export class DocumentService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.error(
       `Backend returned code ${error.status}, body was: `, error.error);
-    // Customize error message based on status or error content
     let userMessage = 'Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.';
     if (error.error instanceof ErrorEvent) {
-      // Client-side or network error
       userMessage = `Erro: ${error.error.message}`;
     } else if (error.status === 404) {
       userMessage = 'Recurso não encontrado.';
     } else if (error.status === 400 && error.error?.message) {
-      // Use backend validation message if available
       userMessage = error.error.message;
     } else if (error.status === 401) {
       userMessage = 'Não autorizado. Verifique suas credenciais ou faça login novamente.';
-      // Note: The AuthInterceptor should handle token refresh/logout for 401
     } else if (error.status === 403) {
       userMessage = 'Acesso negado.';
     }
-
     return throwError(() => new Error(userMessage));
   }
 }

@@ -26,18 +26,19 @@
     </thead>
     <tbody>
       <!-- Assuming documents are sorted by backend or using OrderByPipe if needed -->
-      <tr *ngFor="let doc of documents | orderBy:
-      \"createdAt\":\"desc\"">
+      <!-- Corrected orderBy pipe syntax and removed newline -->
+      <tr *ngFor="let doc of documents | orderBy:'createdAt':'desc'">
         <td>{{ doc.originalFilename }}</td>
         <td>{{ doc.status }}</td> <!-- Consider a pipe for better status display -->
-        <td>{{ doc.createdAt | date:
-        \"dd/MM/yyyy HH:mm\":\"UTC\" }}</td>
+        <!-- Corrected date pipe syntax and removed newline -->
+        <td>{{ doc.createdAt | date:'dd/MM/yyyy HH:mm':'UTC' }}</td>
         <td>{{ doc.signatories | nextSignatory }}</td>
         <td class="actions">
           <button (click)="viewDocument(doc.id)" title="Visualizar">👁️</button>
           <button (click)="downloadDocument(doc.id, doc.originalFilename)" title="Baixar">⬇️</button>
           <!-- Show Sign button only if it's the current user's turn -->
-          <button *ngIf="doc.status === \'SIGNING\' && (doc.signatories | nextSignatory) === (currentUser?.name || currentUser?.email)" (click)="signDocument(doc.id)" title="Assinar">✍️</button>
+          <!-- Corrected *ngIf syntax -->
+          <button *ngIf="doc.status === 'SIGNING' && (doc.signatories | nextSignatory) === (currentUser?.name || currentUser?.email)" (click)="signDocument(doc.id)" title="Assinar">✍️</button>
         </td>
       </tr>
     </tbody>
