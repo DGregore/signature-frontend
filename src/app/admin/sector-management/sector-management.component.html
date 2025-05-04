@@ -1,18 +1,48 @@
-<h2>Gerenciamento de Setores</h2>
-<form (ngSubmit)="addSector()">
-  <label for="name">Nome do Setor:</label>
-  <input type="text" id="name" [(ngModel)]="newSector.name" name="name" required />
+<!-- Formulário para Adicionar/Editar Setor -->
+<div class="form-container">
+  <h2>{{ editingSector ? 'Editar Setor' : 'Adicionar Novo Setor' }}</h2>
+  <form (ngSubmit)="saveSector()" #sectorForm="ngForm">
+    <div class="form-group">
+      <label for="sectorName">Nome:</label>
+      <input type="text" id="sectorName" name="sectorName" [(ngModel)]="currentSector.name" required #name="ngModel">
+      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="error-message">
+        Nome é obrigatório.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="sectorDescription">Descrição:</label>
+      <input type="text" id="sectorDescription" name="sectorDescription" [(ngModel)]="currentSector.description">
+    </div>
+    <div class="form-actions">
+      <button type="submit" [disabled]="sectorForm.invalid">{{ editingSector ? 'Salvar Alterações' : 'Adicionar Setor' }}</button>
+      <button type="button" (click)="cancelEdit()" *ngIf="editingSector">Cancelar Edição</button>
+    </div>
+  </form>
+</div>
 
-  <label for="description">Descrição:</label>
-  <textarea id="description" [(ngModel)]="newSector.description" name="description"></textarea>
+<!-- Lista de Setores -->
+<div class="list-container">
+  <h2>Setores Existentes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sector of sectors">
+        <td>{{ sector.id }}</td>
+        <td>{{ sector.name }}</td>
+        <td>{{ sector.description }}</td>
+        <td>
+          <button (click)="editSector(sector)">Editar</button>
+          <button (click)="confirmDelete(sector.id)">Excluir</button> <!-- Modificado para confirmar -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-  <button type="submit">Adicionar Setor</button>
-</form>
-
-<h3>Setores Existentes</h3>
-<ul>
-  <li *ngFor="let sector of sectors">
-    {{ sector.name }} - {{ sector.description }}
-    <button (click)="deleteSector(sector.id)">Deletar</button>
-  </li>
-</ul>
